@@ -16,6 +16,7 @@ namespace Tuoluojiang\Baidubce\Base\Http;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\LimitStream;
+use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\Psr7\Stream;
 use Psr\Log\LoggerInterface;
@@ -145,20 +146,11 @@ class BceHttpClient
             $guzzleRequestOptions['timeout'] = $config[BceClientConfigOptions::SOCKET_TIMEOUT_IN_MILLIS]
                     / 1000.0;
         }
-        $guzzleRequest = $this->guzzleClient->createRequest(
-            $httpMethod,
-            $url,
-            $headers,
-            $entityBody,
-            $guzzleRequestOptions
-        );
-        if ($outputStream !== null) {
-            $guzzleRequest->setResponseBody($outputStream);
-        }
+        $guzzleRequest = new Request($httpMethod, $url, $headers, $entityBody);
 
         // Send request
         try {
-            $guzzleResponse = $this->guzzleClient->send($guzzleRequest);
+            $guzzleResponse = $this->guzzleClient->send($guzzleRequest,$guzzleRequestOptions);
         } catch (\Exception $e) {
             throw new BceClientException($e->getMessage());
         }
