@@ -119,8 +119,8 @@ class Qianfan
 
     /**
      * 发送请求.
-     * @throws \BaiduBce\Exception\BceClientException
-     * @throws \BaiduBce\Exception\BceServiceException
+     * @throws Exception\BceClientException
+     * @throws Exception\BceServiceException
      * @return mixed
      */
     protected function request(string $path, string $body = '', array $params = [], string $method = 'POST', array $headers = [])

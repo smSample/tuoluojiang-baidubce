@@ -14,10 +14,10 @@ declare(strict_types=1);
  */
 namespace Tuoluojiang\Baidubce\Base;
 
+use GuzzleHttp\Client;
 use Psr\SimpleCache\CacheInterface;
 use Tuoluojiang\Baidubce\Base\Auth\BceV1Signer;
 use Tuoluojiang\Baidubce\Base\Http\BceHttpClient;
-use GuzzleHttp\Client;
 use Tuoluojiang\Baidubce\Exception\BaiduBceException;
 use Tuoluojiang\Baidubce\Util\Cache;
 
@@ -40,7 +40,7 @@ class Chat
 
     private bool    $verify = false;
 
-    private Cache   $cache;
+    private CacheInterface   $cache;
 
     private Client $client;
 
