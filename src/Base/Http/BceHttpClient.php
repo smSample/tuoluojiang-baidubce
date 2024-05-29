@@ -28,6 +28,7 @@ use Tuoluojiang\Baidubce\Base\Exception\BceServiceException;
 use Tuoluojiang\Baidubce\Base\Log\LogFactory;
 use Tuoluojiang\Baidubce\Base\Util\DateUtils;
 use Tuoluojiang\Baidubce\Base\Util\HttpUtils;
+use Tuoluojiang\Baidubce\Exception\BaiduBceException;
 
 /**
  * Standard Http request of BCE.
@@ -138,25 +139,25 @@ class BceHttpClient
             $config[BceClientConfigOptions::CONNECTION_TIMEOUT_IN_MILLIS])
         ) {
             $guzzleRequestOptions['connect_timeout'] = $config[BceClientConfigOptions::CONNECTION_TIMEOUT_IN_MILLIS]
-                    / 1000.0;
+                / 1000.0;
         }
         if (isset(
             $config[BceClientConfigOptions::SOCKET_TIMEOUT_IN_MILLIS])
         ) {
             $guzzleRequestOptions['timeout'] = $config[BceClientConfigOptions::SOCKET_TIMEOUT_IN_MILLIS]
-                    / 1000.0;
+                / 1000.0;
         }
         $guzzleRequest = new Request($httpMethod, $url, $headers, $entityBody);
 
         // Send request
         try {
-            $guzzleResponse = $this->guzzleClient->send($guzzleRequest,$guzzleRequestOptions);
+            $guzzleResponse = $this->guzzleClient->send($guzzleRequest, $guzzleRequestOptions);
         } catch (\Exception $e) {
             throw new BceClientException($e->getMessage());
         }
 
         //statusCode < 200
-        if ($guzzleResponse->getStatusCode()) {
+        if (! $guzzleResponse->getStatusCode()) {
             throw new BceClientException('Can not handle 1xx Http status code');
         }
         //for chunked http response, http status code can not be trust
@@ -170,40 +171,31 @@ class BceHttpClient
             }
         }
         //Successful means 2XX or 304
-        if (! $guzzleResponse->getStatusCode()) {
+        if ($guzzleResponse->getStatusCode()) {
             $requestId = $guzzleResponse->getHeader(HttpHeaders::BCE_REQUEST_ID);
             $message   = $guzzleResponse->getReasonPhrase();
             $code      = null;
             if (stripos($guzzleResponse->getHeaderLine('Content-Type'), 'application/json') !== false) {
-                try {
-                    $responseBody = $guzzleResponse->getBody();
-                    if (isset($responseBody['message'])) {
-                        $message = $responseBody['message'];
-                    }
-                    if (isset($responseBody['code'])) {
-                        $code = $responseBody['code'];
-                    }
-                } catch (\Exception $e) {
-                    // ignore this error
-                    $this->logger->warning(
-                        'Fail to parse error response body: '
-                        . $e->getMessage()
-                    );
+                $responseBody = $guzzleResponse->getBody()->getContents();
+                $responseBody = json_decode($responseBody, true);
+                if (isset($responseBody['error_code'])) {
+                    $code    = $responseBody['error_code'];
+                    $message = $responseBody['error_msg'];
+                    throw new BaiduBceException($message, $code);
                 }
+                return $responseBody;
             }
             throw new BceServiceException(
-                $requestId,
+                $requestId[0],
                 $code,
                 $message,
                 $guzzleResponse->getStatusCode()
             );
         }
         if ($outputStream === null) {
-            $body = $guzzleResponse->getBody(true);
+            $body = $guzzleResponse->getBody();
         } else {
             $body = null;
-            // detach the stream so that it will not be closed when the response
-            // is garbage collected.
             $guzzleResponse->getBody()->detach();
         }
         return [
