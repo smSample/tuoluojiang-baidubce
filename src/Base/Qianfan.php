@@ -14,9 +14,10 @@ declare(strict_types=1);
  */
 namespace Tuoluojiang\Baidubce\Base;
 
-use Tuoluojiang\Baidubce\Base\Auth\BceV1Signer;
-use Tuoluojiang\Baidubce\Base\Http\BceHttpClient;
+use GuzzleHttp\Client;
+use GuzzleHttp\Psr7\Request;
 use Tuoluojiang\Baidubce\Exception\BaiduBceException;
+use Tuoluojiang\Baidubce\Util\BceV1Signer;
 
 class Qianfan
 {
@@ -104,10 +105,15 @@ class Qianfan
         'Content-Type' => 'application/json',
     ];
 
-    protected array  $configs;
+    protected array $configs;
+
+    private bool    $verify = false;
+
+    private Client  $client;
 
     public function __construct(protected $accessKey, protected $secretKey)
     {
+        $this->client  = new Client(['verify' => $this->verify, 'timeout' => 10]);
         $this->configs = [
             'credentials' => [
                 'ak' => $this->accessKey,
@@ -119,8 +125,7 @@ class Qianfan
 
     /**
      * 发送请求.
-     * @throws Exception\BceClientException
-     * @throws Exception\BceServiceException
+     * @throws \GuzzleHttp\Exception\GuzzleException
      * @return mixed
      */
     protected function request(string $path, string $body = '', array $params = [], string $method = 'POST', array $headers = [])
@@ -128,18 +133,29 @@ class Qianfan
         if (! $headers) {
             $headers = $this->commonHeader;
         }
+        $headers['Content-Type']  = 'application/json';
+        $now                      = new \DateTime();
+        $headers['x-bce-date']    = $now->format('Y-m-d\TH:i:s\Z');
+        $signer                   = new BceV1Signer();
+        $headers['Authorization'] = $signer->sign(
+            $this->configs['credentials'],
+            $method,
+            $path,
+            $headers,
+            $params
+        );
+        $request = new Request($method, $this->baseUrl . $path, $headers, $body);
         try {
-            $response = (new BceHttpClient())->sendRequest(
-                $this->configs,
-                $method,
-                $path,
-                $body,
-                $headers,
-                $params,
-                new BceV1Signer()
-            );
-            return $response['body'];
-        } catch (BaiduBceException $e) {
+            $response = $this->client->send($request);
+            $response = json_decode($response->getBody()->getContents(), true);
+            if (! $response) {
+                throw new BaiduBceException('无响应', 500);
+            }
+            if (isset($response['error_code'])) {
+                throw new BaiduBceException($response['error_msg'], $response['error_code']);
+            }
+            return $response;
+        } catch (\Exception $e) {
             throw new BaiduBceException($e->getMessage());
         }
     }

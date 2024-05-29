@@ -12,7 +12,7 @@ declare(strict_types=1);
  *  | Author: 陀螺匠 Team <admin@tuoluojiang.com>
  *  +----------------------------------------------------------------------
  */
-namespace Tuoluojiang\BaiduBce\Exception;
+namespace Tuoluojiang\Baidubce\Exception;
 
 use Throwable;
 
@@ -21,12 +21,15 @@ use Throwable;
  */
 class BaiduBceException extends \RuntimeException
 {
+    protected int $statusCode;
+
     /**
      * @param $message
      * @param $code
      */
-    public function __construct($message = '', $code = 0, Throwable $previous = null)
+    public function __construct($message = '', $code = 0, Throwable $previous = null, int $statusCode = 200)
     {
         parent::__construct($message, $code, $previous);
+        $this->statusCode = $statusCode;
     }
 }
