@@ -14,13 +14,14 @@ declare(strict_types=1);
  */
 namespace Tuoluojiang\Baidubce\Application;
 
+use Psr\SimpleCache\CacheInterface;
 use Tuoluojiang\Baidubce\Base\Chat;
 
 class Conversation extends Chat
 {
-    public function __construct(array $config, bool $type = true)
+    public function __construct(array $config,CacheInterface $cache = null, bool $type = true)
     {
-        parent::__construct($config, $type);
+        parent::__construct($config, $cache, $type);
     }
 
     /**

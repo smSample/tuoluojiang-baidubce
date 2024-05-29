@@ -14,6 +14,7 @@ declare(strict_types=1);
  */
 namespace Tuoluojiang\Baidubce\Base;
 
+use Psr\SimpleCache\CacheInterface;
 use Tuoluojiang\Baidubce\Base\Auth\BceV1Signer;
 use Tuoluojiang\Baidubce\Base\Http\BceHttpClient;
 use GuzzleHttp\Client;
@@ -51,10 +52,10 @@ class Chat
 
     private string $secretKey;
 
-    public function __construct(protected array $config, protected bool $types = self::TYPE_ASK)
+    public function __construct(protected array $config, CacheInterface $cache = null, protected bool $types = self::TYPE_ASK)
     {
         $this->client = new Client(['verify' => $this->verify, 'timeout' => 10]);
-        $this->cache  = new Cache($this->config['redis'] ?? []);
+        $this->cache  = $cache ?: new Cache($this->config['redis'] ?? []);
         if ($types) {
             $this->configs = [
                 'credentials' => [
