@@ -14,8 +14,8 @@ declare(strict_types=1);
  */
 namespace Tuoluojiang\Baidubce\Application;
 
-use BaiduBce\Exception\BceClientException;
-use BaiduBce\Exception\BceServiceException;
+use Tuoluojiang\Baidubce\Base\Exception\BceClientException;
+use Tuoluojiang\Baidubce\Base\Exception\BceServiceException;
 use Tuoluojiang\Baidubce\Base\Qianfan;
 
 /**

@@ -14,9 +14,8 @@ declare(strict_types=1);
  */
 namespace Tuoluojiang\Baidubce\Base;
 
-include '../Util/BaiduBce.phar';
-use BaiduBce\Auth\BceV1Signer;
-use BaiduBce\Http\BceHttpClient;
+use Tuoluojiang\Baidubce\Base\Auth\BceV1Signer;
+use Tuoluojiang\Baidubce\Base\Http\BceHttpClient;
 use Tuoluojiang\Baidubce\Exception\BaiduBceException;
 
 class Qianfan

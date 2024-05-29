@@ -16,7 +16,11 @@
     "require": {
         "php": "^8.0.2",
         "guzzlehttp/guzzle": "^7.5",
-        "psr/simple-cache": "^3.0",
-        "ext-redis": "*"
+        "psr/log": "^3.0",
+        "ext-redis": "*",
+        "guzzle/guzzle": "^3.8",
+        "symfony/event-dispatcher": "^6.0",
+        "monolog/monolog": "^2.9",
+        "psr/simple-cache": "^3.0"
     }
 }
