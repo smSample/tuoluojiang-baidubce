@@ -165,9 +165,9 @@ class Chat
         if (! $response) {
             throw new BaiduBceException('获取token失败');
         }
-        if ($response['status'] === 200) {
-            return $response['data'];
+        if (isset($response['error_code'])) {
+            throw new BaiduBceException($response['error_msg'], $response['error_code']);
         }
-        throw new BaiduBceException($response['msg']);
+        return $response;
     }
 }
