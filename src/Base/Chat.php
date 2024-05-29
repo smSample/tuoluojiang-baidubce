@@ -17,7 +17,9 @@ namespace Tuoluojiang\Baidubce\Base;
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Request;
 use Psr\SimpleCache\CacheInterface;
+use Tuoluojiang\Baidubce\Base\Util\HttpUtils;
 use Tuoluojiang\Baidubce\Exception\BaiduBceException;
+use Tuoluojiang\Baidubce\Util\BceV1Signer;
 use Tuoluojiang\Baidubce\Util\Cache;
 
 class Chat
@@ -123,31 +125,49 @@ class Chat
             if (! $headers) {
                 $headers = $this->commonHeader;
             }
-            $request = new Request($method, $this->chatUrl . $path, $headers, $body);
-            try {
-                $response = $this->client->send($request);
-                $response = json_decode($response->getBody()->getContents(), true);
-                if (! $response) {
-                    throw new BaiduBceException('无响应', 500);
-                }
-                if (isset($response['error_code'])) {
-                    throw new BaiduBceException($response['error_msg'],$response['error_code']);
-                }else{
-                    return $response;
-                }
-            } catch (\Exception $e) {
-                throw new BaiduBceException($e->getMessage());
+            $headers['User-Agent'] = sprintf(
+                'bce-sdk-php/%s/%s/%s',
+                Bce::SDK_VERSION,
+                php_uname(),
+                phpversion()
+            );
+            [$hostUrl, $hostHeader] = HttpUtils::parseEndpointFromConfig($this->configs);
+            $headers['Host']        = $hostHeader;
+            $url                    = $hostUrl . HttpUtils::urlEncodeExceptSlash($path);
+            $queryString            = HttpUtils::getCanonicalQueryString($params, false);
+            if ($queryString !== '') {
+                $url .= "?{$queryString}";
             }
-        } else {
-            $response = $this->client->post($this->tokenUrl . $path . "?access_token={$this->accessToken()}", ['json' => $body, 'headers' => $this->commonHeader]);
+            $headers['Content-Type']  = 'application/json';
+            $now                      = new \DateTime();
+            $headers['x-bce-date']    = $now->format('Y-m-d\TH:i:s\Z');
+            $signer                   = new BceV1Signer();
+            $headers['Authorization'] = $signer->sign(
+                $this->configs['credentials'],
+                $method,
+                $path,
+                $headers,
+                $params
+            );
+            $request  = new Request($method, $url, $headers, $body);
+            $response = $this->client->send($request);
             $response = json_decode($response->getBody()->getContents(), true);
             if (! $response) {
-                throw new BaiduBceException('获取token失败');
+                throw new BaiduBceException('无响应', 500);
             }
-            if ($response['status'] === 200) {
-                return $response['data'];
+            if (isset($response['error_code'])) {
+                throw new BaiduBceException($response['error_msg'], $response['error_code']);
             }
-            throw new BaiduBceException($response['msg']);
+            return $response;
         }
+        $response = $this->client->post($this->tokenUrl . $path . "?access_token={$this->accessToken()}", ['json' => $body, 'headers' => $this->commonHeader]);
+        $response = json_decode($response->getBody()->getContents(), true);
+        if (! $response) {
+            throw new BaiduBceException('获取token失败');
+        }
+        if ($response['status'] === 200) {
+            return $response['data'];
+        }
+        throw new BaiduBceException($response['msg']);
     }
 }
