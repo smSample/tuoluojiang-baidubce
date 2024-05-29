@@ -102,10 +102,6 @@ class Qianfan
 
     protected string $baseUrl = 'https://qianfan.baidubce.com';
 
-    protected array  $commonHeader = [
-        'Content-Type' => 'application/json',
-    ];
-
     protected array $configs;
 
     private bool    $verify = false;
@@ -131,9 +127,6 @@ class Qianfan
      */
     protected function request(string $path, string $body = '', array $params = [], string $method = 'POST', array $headers = [])
     {
-        if (! $headers) {
-            $headers = $this->commonHeader;
-        }
         $headers['User-Agent'] = sprintf(
             'bce-sdk-php/%s/%s/%s',
             Bce::SDK_VERSION,

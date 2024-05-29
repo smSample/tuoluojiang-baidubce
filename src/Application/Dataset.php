@@ -37,8 +37,7 @@ class Dataset extends Qianfan
      * @param int $storageType 数据集存储类型，示例：sysBos，可选值如下：· 用户bos，固定值usrBos· 公共bos，固定值sysBos
      * @param string $storageId 使用用户bos时需要填写使用的bucket
      * @param string $rawStoragePath 使用用户bos时需要填写使用的目录，格式为前后加斜杠，示例：“/yourDir/”
-     * @throws \BaiduBce\Exception\BceClientException
-     * @throws \BaiduBce\Exception\BceServiceException
+     * @throws \GuzzleHttp\Exception\GuzzleException
      * @return mixed
      */
     public function createDataset(string $name, int $projectType, int $templateType, int $dataType, int $storageType, string $storageId = '', string $rawStoragePath = '')
@@ -50,6 +49,8 @@ class Dataset extends Qianfan
     /**
      * 获取数据集详情.
      * @param string $datasetIds 数据集版本ID，说明：（1）多个数据集版本ID时，用英文逗号,隔开，示例：'1,2,3,4'（2）可以通过以下任一方式获取值：· 方式一，通过调用创建数据集接口，返回的id字段获取· 方式二，在千帆控制台-数据集管理列表页面查看
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @return mixed
      */
     public function getDatasetInfo(string $datasetIds)
     {
@@ -95,8 +96,7 @@ class Dataset extends Qianfan
     /**
      * 获取数据集状态详情.
      * @param int $datasetId 要导入的数据集版本ID，示例：1，可以通过以下任一方式获取该字段值：· 方式一，通过调用创建数据集接口，返回的id字段获取· 方式二，在千帆控制台-数据集管理列表页面查看
-     * @throws BceClientException
-     * @throws BceServiceException
+     * @throws \GuzzleHttp\Exception\GuzzleException
      * @return mixed
      */
     public function getDatasetStatus(int $datasetId)
@@ -125,8 +125,7 @@ class Dataset extends Qianfan
     /**
      * 获取数据集导出记录.
      * @param int $datasetId 数据集版本ID，可以通过以下任一方式获取该字段值：· 方式一，通过调用创建数据集接口，返回的id字段获取· 方式二，在千帆控制台-数据集管理列表页面查看
-     * @throws BceClientException
-     * @throws BceServiceException
+     * @throws \GuzzleHttp\Exception\GuzzleException
      * @return mixed
      */
     public function exportDatasetRecord(int $datasetId)
@@ -139,8 +138,7 @@ class Dataset extends Qianfan
      * 获取数据集导入错误详情.
      * @param int $datasetId 数据集版本ID，可以通过以下任一方式获取该字段值：· 方式一，通过调用创建数据集接口，返回的id字段获取· 方式二，在千帆控制台-数据集管理列表页面查看
      * @param int $errCode 错误码，调用获取数据集状态详情接口时，如果有错误会返回导入错误信息importErrorInfo字段；
-     * @throws BceClientException
-     * @throws BceServiceException
+     * @throws \GuzzleHttp\Exception\GuzzleException
      * @return mixed
      */
     public function importErrorDetail(int $datasetId, int $errCode)

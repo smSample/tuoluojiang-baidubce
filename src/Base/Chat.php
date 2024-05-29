@@ -24,12 +24,9 @@ use Tuoluojiang\Baidubce\Util\Cache;
 
 class Chat
 {
-    //ERNIE-4.0-8K
-    protected const ERNIE_4 = '/rpc/2.0/ai_custom/v1/wenxinworkshop/chat/completions_pro';
+    protected const TYPE_TOKEN = false;
 
-    private const TYPE_TOKEN = false;
-
-    private const TYPE_ASK = true;
+    protected const TYPE_ASK = true;
 
     protected string $chatUrl = 'https://aip.baidubce.com';
 
@@ -53,7 +50,7 @@ class Chat
 
     private string $secretKey;
 
-    public function __construct(protected array $config, CacheInterface $cache = null, protected bool $types = self::TYPE_ASK)
+    public function __construct(protected array $config, CacheInterface $cache = null, protected bool $types = self::TYPE_TOKEN)
     {
         $this->client = new Client(['verify' => $this->verify, 'timeout' => 10]);
         $this->cache  = $cache ?: new Cache($this->config['redis'] ?? []);

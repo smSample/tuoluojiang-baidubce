@@ -17,15 +17,43 @@ namespace Tuoluojiang\Baidubce\Application;
 use Psr\SimpleCache\CacheInterface;
 use Tuoluojiang\Baidubce\Base\Chat;
 
+/**
+ * 会话.
+ */
 class Conversation extends Chat
 {
-    public function __construct(array $config,CacheInterface $cache = null, bool $type = true)
+    //会话模型
+    protected array $conversationPath = [
+        'ernie-3.5' => [
+            '/rpc/2.0/ai_custom/v1/wenxinworkshop/chat/completions',
+            '/rpc/2.0/ai_custom/v1/wenxinworkshop/chat/ernie-3.5-8k-0205',
+            '/rpc/2.0/ai_custom/v1/wenxinworkshop/chat/ernie-3.5-8k-1222',
+            '/rpc/2.0/ai_custom/v1/wenxinworkshop/chat/ernie_bot_8k',
+            '/rpc/2.0/ai_custom/v1/wenxinworkshop/chat/ernie-3.5-4k-0205',
+        ],
+        'ernie-4.0' => [
+            '/rpc/2.0/ai_custom/v1/wenxinworkshop/chat/completions_pro',
+            '/rpc/2.0/ai_custom/v1/wenxinworkshop/chat/completions_pro_preemptible',
+            '/rpc/2.0/ai_custom/v1/wenxinworkshop/chat/ernie-4.0-8k-preview',
+            '/rpc/2.0/ai_custom/v1/wenxinworkshop/chat/ernie-4.0-8k-0329',
+        ],
+        'ernie-speed' => [
+            '/rpc/2.0/ai_custom/v1/wenxinworkshop/chat/ernie_speed',
+            '/rpc/2.0/ai_custom/v1/wenxinworkshop/chat/ernie-speed-128k',
+        ],
+        'ernie-lite' => [
+            '/rpc/2.0/ai_custom/v1/wenxinworkshop/chat/eb-instant',
+            '/rpc/2.0/ai_custom/v1/wenxinworkshop/chat/ernie-lite-8k',
+        ],
+    ];
+
+    public function __construct(array $config, CacheInterface $cache = null, bool $type = true)
     {
         parent::__construct($config, $cache, $type);
     }
 
     /**
-     * ERNIE-4.0-8K.
+     * 发送模型会话.
      * @param string $user_id 表示最终用户的唯一标识符，可以监视和检测滥用行为，防止接口恶意调用
      * @param float $temperature 说明：（1）较高的数值会使输出更加随机，而较低的数值会使其更加集中和确定。（2）默认0.95，范围 (0, 1.0]，不能为0。（3）建议该参数和top_p只设置1个。（4）建议top_p和temperature不要同时更改。。
      * @param float $top_p 说明：（1）影响输出文本的多样性，取值越大，生成文本的多样性越强。（2）默认0.8，取值范围 [0, 1.0]。（3）建议该参数和temperature只设置1个。（4）建议top_p和temperature不要同时更改。
@@ -37,10 +65,11 @@ class Conversation extends Chat
      * @param string $max_output_tokens 指定模型最大输出token数，范围[2, 2048]
      * @throws \GuzzleHttp\Exception\GuzzleException
      * @throws \Psr\SimpleCache\InvalidArgumentException
+     * @return mixed
      */
-    public function ernie_4(array $messages, string $user_id = '', float $temperature = 0.95, float $top_p = 0.8, int $penalty_score = 1, string $system = '', string $stop = '', bool $disable_search = false, bool $enable_citation = false, string $max_output_tokens = '')
+    public function handler(array $messages, string $user_id = '', float $temperature = 0.95, float $top_p = 0.8, int $penalty_score = 1, string $system = '', string $stop = '', bool $disable_search = false, bool $enable_citation = false, string $max_output_tokens = '', string $path = 'ernie-4.0')
     {
         $body = json_encode(compact('messages', 'user_id', 'temperature', 'top_p', 'penalty_score', 'system', 'stop', 'disable_search', 'enable_citation', 'max_output_tokens'));
-        return $this->request(self::ERNIE_4, $body);
+        return $this->request($this->conversationPath[$path][0], $body);
     }
 }

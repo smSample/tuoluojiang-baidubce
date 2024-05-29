@@ -37,8 +37,7 @@ class Prompt extends Qianfan
      * @param int $frameworkType 模版框架
      * @param string $negativeTemplateContent 反向prompt模版内容，表示不希望大模型生成的内容，说明：只有sceneType为2，即场景类型为文生图时，该字段有效
      * @param string $negativeTemplateVariables 反向prompt模版的变量，说明：只有sceneType为2时，即场景类型为文生图时，该字段有效
-     * @throws \BaiduBce\Exception\BceClientException
-     * @throws \BaiduBce\Exception\BceServiceException
+     * @throws \GuzzleHttp\Exception\GuzzleException
      * @return mixed
      */
     public function promptCreate(string $templateName, string $templateContent, string $templateVariables, string $variableIdentifier, array $labelIds = [], int $sceneType = 0, int $frameworkType = 0, string $negativeTemplateContent = '', string $negativeTemplateVariables = '')
@@ -55,8 +54,7 @@ class Prompt extends Qianfan
      * @param string $templateContent 模版内容
      * @param string $variableIdentifier 变量识别符号
      * @param string $negativeTemplateContent 反向prompt模版内容，表示不希望大模型生成的内容，说明：只有sceneType为2，即场景类型为文生图时，该字段有效
-     * @throws \BaiduBce\Exception\BceClientException
-     * @throws \BaiduBce\Exception\BceServiceException
+     * @throws \GuzzleHttp\Exception\GuzzleException
      * @return mixed
      */
     public function promptUpdate(int $templateId, string $templateName = '', array $labelIds = [], string $templateContent = '', string $variableIdentifier = '', string $negativeTemplateContent = '')
@@ -68,8 +66,7 @@ class Prompt extends Qianfan
     /**
      * 删除Prompt模版.
      * @param int $templateId Prompt模版Id
-     * @throws \BaiduBce\Exception\BceServiceException
-     * @throws \BaiduBce\Exception\BceClientException
+     * @throws \GuzzleHttp\Exception\GuzzleException
      * @return mixed
      */
     public function promptDelete(int $templateId)
@@ -85,8 +82,7 @@ class Prompt extends Qianfan
      * @param string $name 输入模版名称或内容搜索
      * @param array $labelIds 标签ID数组
      * @param int $type 模板类型：1预置模板，2用户自定义模板
-     * @throws \BaiduBce\Exception\BceClientException
-     * @throws \BaiduBce\Exception\BceServiceException
+     * @throws \GuzzleHttp\Exception\GuzzleException
      * @return mixed
      */
     public function promptList(int $offset = 1, int $pageSize = 10, string $name = '', array $labelIds = [], int $type = 2)
@@ -99,8 +95,7 @@ class Prompt extends Qianfan
      * 获取prompt模版标签列表.
      * @param int $offset 偏移量，不填则默认为0
      * @param int $pageSize 一页大小，不填则默认为10
-     * @throws \BaiduBce\Exception\BceClientException
-     * @throws \BaiduBce\Exception\BceServiceException
+     * @throws \GuzzleHttp\Exception\GuzzleException
      * @return mixed
      */
     public function promptLabelList(int $offset = 1, int $pageSize = 10)
@@ -112,8 +107,7 @@ class Prompt extends Qianfan
     /**
      * 获取prompt模版标签详情.
      * @param int $id 模板ID
-     * @throws \BaiduBce\Exception\BceClientException
-     * @throws \BaiduBce\Exception\BceServiceException
+     * @throws \GuzzleHttp\Exception\GuzzleException
      * @return mixed
      */
     public function promptInfo(int $id)

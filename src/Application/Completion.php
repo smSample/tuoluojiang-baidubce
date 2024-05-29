@@ -14,25 +14,12 @@ declare(strict_types=1);
  */
 namespace Tuoluojiang\Baidubce\Application;
 
+/**
+ * 文本续写.
+ */
 class Completion
 {
     public function run()
     {
-        $curl = curl_init();
-        curl_setopt_array($curl, [
-            CURLOPT_URL            => 'https://aip.baidubce.com/rpc/2.0/ai_custom/v1/wenxinworkshop/completions/?access_token=',
-            CURLOPT_TIMEOUT        => 30,
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_SSL_VERIFYPEER => false,
-            CURLOPT_SSL_VERIFYHOST => false,
-            CURLOPT_CUSTOMREQUEST  => 'POST',
-
-            CURLOPT_HTTPHEADER => [
-                'Content-Type: application/json',
-            ],
-        ]);
-        $response = curl_exec($curl);
-        curl_close($curl);
-        return $response;
     }
 }
