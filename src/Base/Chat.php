@@ -160,7 +160,7 @@ class Chat
             }
             return $response;
         }
-        $response = $this->client->post($this->tokenUrl . $path . "?access_token={$this->accessToken()}", ['json' => $body, 'headers' => $this->commonHeader]);
+        $response = $this->client->post($this->chatUrl . $path . "?access_token={$this->accessToken()}", ['json' => $body, 'headers' => $this->commonHeader]);
         $response = json_decode($response->getBody()->getContents(), true);
         if (! $response) {
             throw new BaiduBceException('获取token失败');
