@@ -1,0 +1,20 @@
+{
+    "name": "tuoluojiang/baidubce",
+    "description": "百度千帆大模型",
+    "license": "Apache-2.0",
+    "autoload": {
+        "psr-4": {
+            "Tuoluojiang\\Baidubce\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "lunatic",
+            "email": "453850531@qq.com"
+        }
+    ],
+    "require": {
+        "php": "^8.0.2",
+        "guzzlehttp/guzzle": "^7.5"
+    }
+}
