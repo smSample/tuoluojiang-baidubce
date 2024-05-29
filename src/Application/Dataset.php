@@ -16,7 +16,7 @@ namespace Tuoluojiang\Baidubce\Application;
 
 use BaiduBce\Exception\BceClientException;
 use BaiduBce\Exception\BceServiceException;
-use Tuoluojiang\baidubce\Base\Qianfan;
+use Tuoluojiang\Baidubce\Base\Qianfan;
 
 /**
  * 数据集.

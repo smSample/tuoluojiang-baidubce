@@ -15,7 +15,7 @@ declare(strict_types=1);
 namespace Tuoluojiang\Baidubce\Util;
 
 use Psr\SimpleCache\CacheInterface;
-use Tuoluojiang\BaiduBce\Exception\BaiduBceException;
+use Tuoluojiang\Baidubce\Exception\BaiduBceException;
 
 class Cache implements CacheInterface
 {

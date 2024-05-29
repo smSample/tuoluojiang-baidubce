@@ -14,7 +14,7 @@ declare(strict_types=1);
  */
 namespace Tuoluojiang\Baidubce\Application;
 
-use Tuoluojiang\baidubce\Base\Chat;
+use Tuoluojiang\Baidubce\Base\Chat;
 
 class Conversation extends Chat
 {

@@ -18,8 +18,8 @@ include '../Util/BaiduBce.phar';
 use BaiduBce\Auth\BceV1Signer;
 use BaiduBce\Http\BceHttpClient;
 use GuzzleHttp\Client;
-use Tuoluojiang\BaiduBce\Exception\BaiduBceException;
-use Tuoluojiang\baidubce\Util\Cache;
+use Tuoluojiang\Baidubce\Exception\BaiduBceException;
+use Tuoluojiang\Baidubce\Util\Cache;
 
 class Chat
 {

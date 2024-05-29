@@ -14,7 +14,7 @@ declare(strict_types=1);
  */
 namespace Tuoluojiang\Baidubce\Application;
 
-use Tuoluojiang\baidubce\Base\Qianfan;
+use Tuoluojiang\Baidubce\Base\Qianfan;
 
 /**
  * 提示词.
