@@ -12,7 +12,7 @@ declare(strict_types=1);
  *  | Author: 陀螺匠 Team <admin@tuoluojiang.com>
  *  +----------------------------------------------------------------------
  */
-namespace Tuoluojiang\baidubce\Util;
+namespace Tuoluojiang\Baidubce\Util;
 
 use Psr\SimpleCache\CacheInterface;
 use Tuoluojiang\BaiduBce\Exception\BaiduBceException;

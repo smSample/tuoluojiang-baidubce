@@ -14,7 +14,7 @@
  * | @day: 2024/5/28
  * +----------------------------------------------------------------------
  */
-namespace Tuoluojiang\baidubce\Application;
+namespace Tuoluojiang\Baidubce\Application;
 
 class Reranker {
 

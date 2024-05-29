@@ -12,7 +12,7 @@ declare(strict_types=1);
  *  | Author: 陀螺匠 Team <admin@tuoluojiang.com>
  *  +----------------------------------------------------------------------
  */
-namespace Tuoluojiang\baidubce\Application;
+namespace Tuoluojiang\Baidubce\Application;
 
 class Images
 {
