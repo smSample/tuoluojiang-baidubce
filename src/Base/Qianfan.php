@@ -16,6 +16,7 @@ namespace Tuoluojiang\Baidubce\Base;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Request;
+use Tuoluojiang\Baidubce\Base\Util\HttpUtils;
 use Tuoluojiang\Baidubce\Exception\BaiduBceException;
 use Tuoluojiang\Baidubce\Util\BceV1Signer;
 
@@ -133,6 +134,19 @@ class Qianfan
         if (! $headers) {
             $headers = $this->commonHeader;
         }
+        $headers['User-Agent'] = sprintf(
+            'bce-sdk-php/%s/%s/%s',
+            Bce::SDK_VERSION,
+            php_uname(),
+            phpversion()
+        );
+        [$hostUrl, $hostHeader] = HttpUtils::parseEndpointFromConfig($this->configs);
+        $headers['Host']        = $hostHeader;
+        $url                    = $hostUrl . HttpUtils::urlEncodeExceptSlash($path);
+        $queryString            = HttpUtils::getCanonicalQueryString($params, false);
+        if ($queryString !== '') {
+            $url .= "?{$queryString}";
+        }
         $headers['Content-Type']  = 'application/json';
         $now                      = new \DateTime();
         $headers['x-bce-date']    = $now->format('Y-m-d\TH:i:s\Z');
@@ -144,7 +158,7 @@ class Qianfan
             $headers,
             $params
         );
-        $request = new Request($method, $this->baseUrl . $path, $headers, $body);
+        $request = new Request($method, $url, $headers, $body);
         try {
             $response = $this->client->send($request);
             $response = json_decode($response->getBody()->getContents(), true);
