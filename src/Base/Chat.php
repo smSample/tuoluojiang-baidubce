@@ -15,9 +15,8 @@ declare(strict_types=1);
 namespace Tuoluojiang\Baidubce\Base;
 
 use GuzzleHttp\Client;
+use GuzzleHttp\Psr7\Request;
 use Psr\SimpleCache\CacheInterface;
-use Tuoluojiang\Baidubce\Base\Auth\BceV1Signer;
-use Tuoluojiang\Baidubce\Base\Http\BceHttpClient;
 use Tuoluojiang\Baidubce\Exception\BaiduBceException;
 use Tuoluojiang\Baidubce\Util\Cache;
 
@@ -114,8 +113,6 @@ class Chat
 
     /**
      * 发送请求.
-     * @throws \BaiduBce\Exception\BceClientException
-     * @throws \BaiduBce\Exception\BceServiceException
      * @throws \GuzzleHttp\Exception\GuzzleException
      * @throws \Psr\SimpleCache\InvalidArgumentException
      * @return mixed
@@ -126,18 +123,19 @@ class Chat
             if (! $headers) {
                 $headers = $this->commonHeader;
             }
+            $request = new Request($method, $this->chatUrl . $path, $headers, $body);
             try {
-                $response = (new BceHttpClient())->sendRequest(
-                    $this->configs,
-                    $method,
-                    $path,
-                    $body,
-                    $headers,
-                    $params,
-                    new BceV1Signer()
-                );
-                return $response['body'];
-            } catch (BaiduBceException $e) {
+                $response = $this->client->send($request);
+                $response = json_decode($response->getBody()->getContents(), true);
+                if (! $response) {
+                    throw new BaiduBceException('无响应', 500);
+                }
+                if (isset($response['error_code'])) {
+                    throw new BaiduBceException($response['error_msg'],$response['error_code']);
+                }else{
+                    return $response;
+                }
+            } catch (\Exception $e) {
                 throw new BaiduBceException($e->getMessage());
             }
         } else {
