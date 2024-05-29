@@ -19,7 +19,7 @@
         "psr/log": "^3.0",
         "ext-redis": "*",
         "guzzle/guzzle": "^3.8",
-        "symfony/event-dispatcher": "^6.0",
+        "symfony/event-dispatcher": "~2.1",
         "monolog/monolog": "^2.9",
         "psr/simple-cache": "^3.0"
     }
