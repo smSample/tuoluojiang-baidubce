@@ -22,8 +22,27 @@ use Tuoluojiang\Baidubce\Base\Chat;
  */
 class Conversation extends Chat
 {
-    //会话模型
+
+    /**
+     * 会话模型
+     * @var array
+     */
     protected array $conversationPath = [
+        'ernie-4.0-8k' => '/rpc/2.0/ai_custom/v1/wenxinworkshop/chat/completions_pro',
+        //ERNIE-SPEED-8K
+        'ernie-speed-8k' => '/rpc/2.0/ai_custom/v1/wenxinworkshop/chat/ernie_speed',
+        //ERNIE-SPEED-APPBUILDER
+        'ernie-speed-appbuilder' => '/rpc/2.0/ai_custom/v1/wenxinworkshop/chat/ai_apaas',
+        //ERNIE-SPEED-128K
+        'ernie-speed-128k' => '/rpc/2.0/ai_custom/v1/wenxinworkshop/chat/ernie-speed-128k',
+        //ERNIE-LITE-8K
+        'ernie-lite-8k' => '/rpc/2.0/ai_custom/v1/wenxinworkshop/chat/ernie-lite-8k',
+        //ERNIE-LITE-8K-0922
+        'ernie-lite-8k-0922' => '/rpc/2.0/ai_custom/v1/wenxinworkshop/chat/eb-instant',
+        //YI-34B-CHAT
+        'yi-34b-chat' => '/rpc/2.0/ai_custom/v1/wenxinworkshop/chat/yi_34b_chat',
+        //FUYU-8B
+        'fuyu-8b'   => '/rpc/2.0/ai_custom/v1/wenxinworkshop/image2text/fuyu_8b',
         'ernie-3.5' => [
             '/rpc/2.0/ai_custom/v1/wenxinworkshop/chat/completions',
             '/rpc/2.0/ai_custom/v1/wenxinworkshop/chat/ernie-3.5-8k-0205',
@@ -36,14 +55,6 @@ class Conversation extends Chat
             '/rpc/2.0/ai_custom/v1/wenxinworkshop/chat/completions_pro_preemptible',
             '/rpc/2.0/ai_custom/v1/wenxinworkshop/chat/ernie-4.0-8k-preview',
             '/rpc/2.0/ai_custom/v1/wenxinworkshop/chat/ernie-4.0-8k-0329',
-        ],
-        'ernie-speed' => [
-            '/rpc/2.0/ai_custom/v1/wenxinworkshop/chat/ernie_speed',
-            '/rpc/2.0/ai_custom/v1/wenxinworkshop/chat/ernie-speed-128k',
-        ],
-        'ernie-lite' => [
-            '/rpc/2.0/ai_custom/v1/wenxinworkshop/chat/eb-instant',
-            '/rpc/2.0/ai_custom/v1/wenxinworkshop/chat/ernie-lite-8k',
         ],
     ];
 
@@ -67,9 +78,9 @@ class Conversation extends Chat
      * @throws \Psr\SimpleCache\InvalidArgumentException
      * @return mixed
      */
-    public function handler(array $messages, string $user_id = '', float $temperature = 0.95, float $top_p = 0.8, int $penalty_score = 1, string $system = '', string $stop = '', bool $disable_search = false, bool $enable_citation = false, string $max_output_tokens = '', string $path = 'ernie-4.0')
+    public function handler(array $messages, string $user_id = '', float $temperature = 0.95, float $top_p = 0.8, int $penalty_score = 1, string $system = '', string $stop = '', bool $disable_search = false, bool $enable_citation = false, string $max_output_tokens = '', string $path = 'yi-34b-chat')
     {
-        $body = json_encode(compact('messages', 'user_id', 'temperature', 'top_p', 'penalty_score', 'system', 'stop', 'disable_search', 'enable_citation', 'max_output_tokens'));
-        return $this->request($this->conversationPath[$path][0], $body);
+        $body = compact('messages', 'user_id', 'temperature', 'top_p', 'penalty_score', 'system', 'stop', 'disable_search', 'enable_citation', 'max_output_tokens');
+        return $this->request($this->conversationPath[strtolower($path)], $body);
     }
 }

@@ -45,7 +45,6 @@ class Embeddings extends Chat
      */
     public function handler(array $input, string $path = 'embedding_v1', string $user_id = '')
     {
-        $body = json_encode(compact('input', 'user_id'));
-        return $this->request($this->path[$path], $body);
+        return $this->request($this->path[$path], compact('input', 'user_id'));
     }
 }

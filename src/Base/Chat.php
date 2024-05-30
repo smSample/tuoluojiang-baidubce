@@ -99,15 +99,16 @@ class Chat
             'client_id'     => $this->apiKey,
             'client_secret' => $this->secretKey,
         ];
-        $response = $this->client->post($this->tokenUrl, ['json' => http_build_query($params), 'headers' => $this->commonHeader]);
+        $response = $this->client->post($this->tokenUrl, ['query' => $params, 'headers' => $this->commonHeader]);
         $response = json_decode($response->getBody()->getContents(), true);
         if (! $response) {
             throw new BaiduBceException('获取token失败');
         }
-        if ($response['status'] === 200) {
-            return $response['data'];
+
+        if (isset($response['error_code'])) {
+            throw new BaiduBceException($response['error_msg'], $response['error_code']);
         }
-        throw new BaiduBceException($response['msg']);
+        return $response;
     }
 
     /**
@@ -116,8 +117,9 @@ class Chat
      * @throws \Psr\SimpleCache\InvalidArgumentException
      * @return mixed
      */
-    protected function request(string $path, string $body = '', array $params = [], string $method = 'POST', array $headers = [])
+    protected function request(string $path, array $body = [], array $params = [], string $method = 'POST', array $headers = [])
     {
+        $body = json_encode(array_filter($body));
         if ($this->types) {
             if (! $headers) {
                 $headers = $this->commonHeader;
@@ -157,10 +159,10 @@ class Chat
             }
             return $response;
         }
-        $response = $this->client->post($this->chatUrl . $path . "?access_token={$this->accessToken()}", ['json' => $body, 'headers' => $this->commonHeader]);
+        $response = $this->client->post($this->chatUrl . $path . "?access_token={$this->accessToken()}", ['body' => $body, 'headers' => $this->commonHeader]);
         $response = json_decode($response->getBody()->getContents(), true);
         if (! $response) {
-            throw new BaiduBceException('获取token失败');
+            throw new BaiduBceException('请求失败');
         }
         if (isset($response['error_code'])) {
             throw new BaiduBceException($response['error_msg'], $response['error_code']);
